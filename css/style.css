@@ -1,0 +1,76 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  margin: 0;
+  padding: 0;
+  max-width: 375px;
+  width: 96%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.addTask {
+  width: 96%;
+  display: flex;
+  flex-direction: row;
+}
+.itemTaskWrapper {
+  padding: 0rem !important;
+  margin-bottom: 2rem;
+  border-top: 2px solid silver;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.itemTaskWrapper:hover {
+  border-top: 0px solid silver;
+  box-shadow: 1px 2px 8px rgb(148, 148, 148);
+}
+
+h3 {
+  text-align: center;
+}
+.row {
+  padding: 0rem !important;
+  margin: 0rem !important;
+}
+.btn {
+  width: 100%;
+  padding: 0 15px;
+}
+.btnItems {
+  display: flex;
+  justify-content: space-between;
+}
+.itemsTask {
+  min-width: 375px;
+}
+.title {
+  padding: 1rem;
+}
+.titleText {
+  color: black;
+}
+.checked {
+  background-color: teal;
+  opacity: 0.5;
+  color: silver;
+}
+.itemTaskWrapper.removeTask {
+  background-color: teal;
+  animation: opacity 1s ease-in-out;
+}
+@keyframes opacity {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
