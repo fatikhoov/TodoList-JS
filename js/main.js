@@ -1,9 +1,33 @@
 const inputTask = document.getElementById('sendTask')
 const btnCreate = document.getElementById('btnAddTask')
+const btnShow = document.getElementById('btnShow')
 const wrapper = document.querySelector('.itemsTask')
+const serveTask = document.querySelector('.serveTask')
 
 let tasks
+let show = true
+let cont = []
 let todoitemElems = []
+
+//прослушиватель клика добавить задачу
+btnCreate.addEventListener('click', () => {
+  tasks.push(new Task(inputTask.value))
+  updateApp()
+  inputTask.value = ''
+})
+//прослушиватель клика загрузить задачи с сервера
+btnShow.addEventListener('click', () => {
+  if (!show) {
+    serveTask.classList.add('show')
+    show = true
+  } else {
+    setTimeout(() => {
+      resp()
+    }, 1000)
+    serveTask.classList.remove('show')
+    show = false
+  }
+})
 
 //проверкахранилища на содержимое
 !localStorage.tasks
@@ -54,7 +78,6 @@ const writeWrapper = () => {
   }
   todoitemElems = document.querySelectorAll('.itemTaskWrapper')
 }
-writeWrapper()
 
 //запись в хранилище
 const addStorage = () => {
@@ -64,12 +87,6 @@ const updateApp = () => {
   addStorage()
   writeWrapper()
 }
-//прослушиватель клика
-btnCreate.addEventListener('click', () => {
-  tasks.push(new Task(inputTask.value))
-  updateApp()
-  inputTask.value = ''
-})
 
 //задача выполнена-не выполнена
 const completedTask = (index) => {
@@ -83,7 +100,7 @@ const completedTask = (index) => {
   updateApp()
 }
 
-//удаление
+//удаление своих задач
 const removeTask = (index) => {
   todoitemElems[index].classList.add('removeTask')
   setTimeout(() => {
@@ -91,3 +108,65 @@ const removeTask = (index) => {
     updateApp()
   }, 500)
 }
+
+//конструктор html задач сервера
+const contHtml = (item, cont) => {
+  let id = cont[item].id
+  return `
+<div class="card"> 
+<div class="itemTaskWrapper col s12 ${cont[item].completed ? 'checked' : ''}">
+<div class="title"> 
+<span class="titleText">${id}</span>
+ <span class="titleText">${cont[item].title} </span>  
+  </div><span class="titleText orange">${
+    !cont[item].completed ? 'задача не решена' : 'задача решена'
+  } </span> 
+<div class="btnItems">
+<button class="btn" id="btnRemove" onclick="serveRemoveTask(${item})">Удалить</button>
+</div></div>
+`
+}
+
+//вызов задач с сервера
+async function fetchServe() {
+  const x = await fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
+  const cont = await x.json()
+  return cont
+}
+
+//фильтр задач по активным и выполненным
+const filterServe = (cont) => {
+  const activeT =
+    cont.length && cont.filter((items) => items.completed == false)
+  const complT = cont.length && cont.filter((items) => items.completed == true)
+  cont = [...activeT, ...complT]
+  return cont
+}
+
+//создаем макет
+async function innerHtmlTasks(cont) {
+  for (const item in cont) {
+    serveTask.innerHTML += contHtml(item, cont)
+  }
+  cardElems = document.querySelectorAll('.card')
+}
+
+//общая функция вызова и сборки задач с сервера
+async function resp() {
+  cont = await fetchServe()
+  cont = await filterServe(cont)
+  serveTask.innerHTML = ''
+  await innerHtmlTasks(cont)
+}
+
+//удаление
+function serveRemoveTask(item) {
+  cardElems[item].classList.add('removeTask')
+  setTimeout(() => {
+    cont.splice(item, 1)
+    serveTask.innerHTML = ''
+    innerHtmlTasks(cont)
+  }, 500)
+}
+
+writeWrapper()
