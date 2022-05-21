@@ -23,10 +23,16 @@
             id="sendTask"
             class="sendTask col s12"
           />
-          <button id="btnAddTask" class="btn col s12">Создать</button>
+          <div class="btnHead">
+            <button id="btnAddTask" class="btn btn_head">Создать задачу</button>
+            <button id="btnShow" class="btn btn_head">
+              Загрузить задачи с сервера
+            </button>
+          </div>
         </div>
         <hr />
         <div class="itemsTask row"></div>
+        <div class="serveTask row show"></div>
       </div>
     </div>
     <script src="/js/main.js"></script>
